@@ -33,6 +33,8 @@ class Actions(abs_models.BaseModel):
     start_on = models.DateTimeField(blank=True, null=True)
     # 活动结束时间
     end_on = models.DateTimeField(blank=True, null=True)
+    # 场地号
+    site_number = models.IntegerField(blank=True, null=True)
 
     class Meta:
         db_table = 'site_info'

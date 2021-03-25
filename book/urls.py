@@ -32,6 +32,7 @@ urlpatterns = [
     # 用户————查看所以具体场地的历史发布信息次数
     url(r'^countbysite/', views.count_bysite),
 
+    url(r'^action/(?P<record_id>\d+)/bookinfo/$', views.get_book_info_by_action),
 ]
 
 

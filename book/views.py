@@ -1,7 +1,9 @@
 import json, logging
 from django.http import HttpResponse
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
 
-from book.models import Sites, BookInfo
+from book.models import Sites, BookInfo, Actions
 
 logger = logging.getLogger(__name__)
 
@@ -492,3 +494,21 @@ def count_bysite(request):
     else:
         result = {"code": 500, "msg": 'failed', "data": '请使用GET请求'}
         return HttpResponse(json.dumps(result), content_type="application/json")
+
+
+@api_view(['GET'])
+def get_book_info_by_action(request, record_id):
+    action_info = Actions.objects.get(pk=record_id)
+    booking_info = BookInfo.objects.filter(action_id=record_id).values('user__nickname', 'booking_number')
+    result = {
+        'action': {
+            'address': action_info.site.site,
+            'limit_number': action_info.limit_number,
+            'creator': action_info.manager.nickname,
+            'start_on': action_info.start_on,
+            'end_on': action_info.end_on,
+            'site_number': action_info.site_number,
+        },
+        'booking_info': booking_info,
+    }
+    return Response(result)
