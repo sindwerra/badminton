@@ -67,7 +67,7 @@ def get_all_siteinfo(request):
         logger.info('下面查询所有的场地信息')
         all_siteinfo = SiteInfo.objects.all()
         data = []
-        if all_siteinfo and len(all_siteinfo) > 0:
+        if all_siteinfo.exists():
             code = 200
             msg = 'successfully'
             for siteinfo in all_siteinfo:
@@ -98,7 +98,7 @@ def get_all_notfull_siteinfo(request):
         logger.info('下面查询所有的场地信息')
         all_siteinfo = SiteInfo.objects.all()
         data = []
-        if all_siteinfo and len(all_siteinfo) > 0:
+        if all_siteinfo.exists():
             code = 200
             msg = 'successfully'
             for siteinfo in all_siteinfo:
@@ -144,7 +144,7 @@ def book_siteinfo(request):
             if remaining_number > 0:
                 # 保存预约信息
                 if_book = BookInfo.objects.filter(siteinfo_sign=siteinfo_sign,user_nickname=nickname)
-                if if_book and len(if_book) > 0:
+                if if_book.exists():
                     code = 203
                     msg = '您已经提交过申请了，请等待审核'
                 else:
