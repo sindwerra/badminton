@@ -1,7 +1,7 @@
 import json, logging
 from django.http import HttpResponse
 
-from book.models import SiteInfo, BookInfo
+from book.models import Sites, BookInfo
 
 logger = logging.getLogger(__name__)
 
@@ -18,7 +18,7 @@ def add_siteinfo(request):
         siteinfo_sign = str(zone_book) + str(site_book) + ' ' + str(time_book)
         logger.info('下面准备发布新的场地信息')
         logger.info(request.POST)
-        if_exist = SiteInfo.objects.filter(siteinfo_sign=siteinfo_sign)
+        if_exist = Sites.objects.filter(siteinfo_sign=siteinfo_sign)
         data = {
             'manager_id': request.POST.get('manager_id'),
             'limit_number': request.POST.get('limit_number'),
@@ -36,7 +36,7 @@ def add_siteinfo(request):
         else:
             code = 200
             msg = 'successfully'
-            siteinfo = SiteInfo()
+            siteinfo = Sites()
             siteinfo.limit_number = limit_number
             siteinfo.remaining_places = limit_number
             siteinfo.title_book = title_book
@@ -65,7 +65,7 @@ def add_siteinfo(request):
 def get_all_siteinfo(request):
     if request.method == "GET":
         logger.info('下面查询所有的场地信息')
-        all_siteinfo = SiteInfo.objects.all()
+        all_siteinfo = Sites.objects.all()
         data = []
         if all_siteinfo.exists():
             code = 200
@@ -96,7 +96,7 @@ def get_all_siteinfo(request):
 def get_all_notfull_siteinfo(request):
     if request.method == "GET":
         logger.info('下面查询所有的场地信息')
-        all_siteinfo = SiteInfo.objects.all()
+        all_siteinfo = Sites.objects.all()
         data = []
         if all_siteinfo.exists():
             code = 200
@@ -135,7 +135,7 @@ def book_siteinfo(request):
         siteinfo_sign = request.POST.get('siteinfo_sign')
         logger.info('下面准备预约场地')
         logger.info(request.POST)
-        if_exist = SiteInfo.objects.filter(siteinfo_sign=siteinfo_sign)
+        if_exist = Sites.objects.filter(siteinfo_sign=siteinfo_sign)
         data = []
         if if_exist.exists():
             # 查看剩余名额——>按照还未使用的来计算
@@ -225,7 +225,7 @@ def all_new_bookinfo(request):
             code = 200
             msg = 'successfully'
             for bookinfo in all_bookinfo:
-                siteinfo = SiteInfo.objects.filter(siteinfo_sign=bookinfo.siteinfo_sign).first()
+                siteinfo = Sites.objects.filter(siteinfo_sign=bookinfo.siteinfo_sign).first()
                 data_ = {
                     'bookinfo_sign': bookinfo.bookinfo_sign,
                     'siteinfo_sign': bookinfo.siteinfo_sign,
@@ -259,7 +259,7 @@ def change_bookinfo_status(request):
             logger.info('找到了正在申请的信息')
             bookinfo = if_exist[0]
             if (int(next_status) == 2):
-                siteinfo = SiteInfo.objects.filter(siteinfo_sign=bookinfo.siteinfo_sign).first()
+                siteinfo = Sites.objects.filter(siteinfo_sign=bookinfo.siteinfo_sign).first()
                 if(siteinfo.remaining_places > 0):
                     siteinfo.remaining_places = siteinfo.remaining_places - 1
                     siteinfo.save()
@@ -327,7 +327,7 @@ def all_pass(request):
 def get_siteinfo_getdetail(request):
     if request.method == "POST":
         siteinfo_sign = request.POST.get('siteinfo_sign')
-        if_exist = SiteInfo.objects.filter(siteinfo_sign=siteinfo_sign)
+        if_exist = Sites.objects.filter(siteinfo_sign=siteinfo_sign)
         if if_exist.exists():
             # 查看剩余名额——>按照还未使用的来计算
             siteinfo = if_exist[0]
@@ -360,7 +360,7 @@ def get_all_my_siteinfo(request):
     if request.method == "POST":
         logger.info('下面查询所有的场地信息')
         manager_id = request.POST.get('manager_id')
-        all_siteinfo = SiteInfo.objects.filter(manager_id=manager_id)
+        all_siteinfo = Sites.objects.filter(manager_id=manager_id)
         data = []
         if all_siteinfo.exists():
             code = 200
@@ -399,7 +399,7 @@ def get_my_bookinfo(request):
             msg = 'successfully'
             data = []
             for bookinfo in if_exist:
-                siteinfo = SiteInfo.objects.filter(siteinfo_sign=bookinfo.siteinfo_sign).first()
+                siteinfo = Sites.objects.filter(siteinfo_sign=bookinfo.siteinfo_sign).first()
                 status = ''
                 if bookinfo.bookinfo_status == '1':
                     status = '预约中'
@@ -465,7 +465,7 @@ def all_pass_bysite(request):
 # 用户————查看所有具体场地的历史发布信息次数
 def count_bysite(request):
     if request.method == "GET":
-        all_siteinfo_ = SiteInfo.objects.all()
+        all_siteinfo_ = Sites.objects.all()
         sitelist = []
         data = []
         code = 200
@@ -477,7 +477,7 @@ def count_bysite(request):
         sitelist = list(set(sitelist))
         for sitelocation in sitelist:
             number = 0
-            all_siteinfo = SiteInfo.objects.all()
+            all_siteinfo = Sites.objects.all()
             for siteinfo in all_siteinfo:
                 if siteinfo.zone_book+siteinfo.site_book == sitelocation:
                     number += 1
