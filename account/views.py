@@ -1,7 +1,7 @@
-import json
-from django.http import HttpResponse, JsonResponse
+import json, logging
+from django.http import HttpResponse
 
-
+logger = logging.getLogger(__name__)
 
 from account.models import User
 
@@ -18,7 +18,7 @@ def register(request):
             is_manager = request.POST.get('is_manager')
             cur_user = User.objects.filter(nickname=nickname).first()
             if cur_user:
-                print('已经注册过了哦~')
+                logger.info('已经注册过了哦~')
                 is_manager = cur_user.is_manager
                 code = 201
                 data = {
@@ -35,15 +35,15 @@ def register(request):
                 newUser.is_manager = is_manager
                 try:
                     newUser.save()
-                    print('新用户注册成功！')
+                    msg = '新用户注册成功'
+                    logger.info(msg)
                     data = {
                         'nickname': nickname,
                         'is_manager': is_manager
                     }
                     code = 200
-                    msg = '新用户注册成功'
                 except Exception as e:
-                    print('error', e)  # 打印错误
+                    logger.info('error is: {}'.format(e))
                     code = 202
                     data = {}
                     msg = '注册失败！'
@@ -54,10 +54,10 @@ def register(request):
 # 获取用户的个人资料
 def get_user_profile(request):
     if request.method == "POST":
-        print(request.POST)
+        logger.info(request.POST)
         nickname = request.POST.get('nickname')
         if_exist = User.objects.filter(nickname=nickname)
-        if if_exist and len(if_exist)>0:
+        if if_exist.exists():
             cur_user = if_exist[0]
             code = 200
             msg = '找到该用户，并获取个人资料'
@@ -80,7 +80,7 @@ def get_user_profile(request):
 # 更改用户的管理员权限
 def change_authority(request):
     if request.method == "POST":
-        print(request.POST)
+        logger.info(request.POST)
         nickname = request.POST.get('nickname')
         is_manager = request.POST.get('is_manager')
 
