@@ -1,3 +1,9 @@
 # python
 *.pyc
 *.log
+
+.DS_Store
+.idea
+
+*.sqlite3
+venv/
