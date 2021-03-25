@@ -38,7 +38,7 @@ class Actions(abs_models.BaseModel):
         db_table = 'site_info'
 
 
-class BookInfo(models.Model):
+class BookInfo(abs_models.BaseModel):
     '''用户的单个预约信息'''
     # 关联活动
     action = models.ForeignKey(Actions, models.DO_NOTHING, blank=True, null=True, related_name='current_bookings')
