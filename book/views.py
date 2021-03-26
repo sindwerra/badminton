@@ -498,8 +498,10 @@ def count_bysite(request):
 
 @api_view(['GET'])
 def get_book_info_by_action(request, record_id):
-    action_info = Actions.objects.get(pk=record_id)
-    booking_info = BookInfo.objects.filter(action_id=record_id).values('user__nickname', 'booking_number')
+    action_info = Actions.objects.get(pk=record_id, deleted=0)
+    booking_info = BookInfo.objects.filter(
+        action_id=record_id, deleted=0
+    ).values('user__nickname', 'booking_number')
     result = {
         'action': {
             'address': action_info.site.site,
