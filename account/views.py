@@ -16,6 +16,7 @@ def register(request):
             nickname = request.POST.get('nickname')
             avatarUrl = request.POST.get('avatar')
             is_manager = request.POST.get('is_manager')
+            print('sdfsdf')
             cur_user = User.objects.filter(nickname=nickname).first()
             if cur_user:
                 logger.info('已经注册过了哦~')
